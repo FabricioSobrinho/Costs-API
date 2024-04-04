@@ -614,7 +614,9 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
-
+.vs
+bin/*
+obj/*
 #####
 # End of core ignore list, below put you custom 'per project' settings (patterns or path)
 #####
