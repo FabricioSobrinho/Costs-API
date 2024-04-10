@@ -1,4 +1,5 @@
-﻿using CostsApi.Entities.Enums;
+﻿using CostsApi.ProjectServices;
+using CostsApi.Entities.Enums;
 
 namespace CostsApi.Projects
 {
@@ -8,6 +9,7 @@ namespace CostsApi.Projects
 		public double Budget { get; set; }
 		public double Cost { get; set; }
 		public Category Category { get; set; }
+		public List<ProjectService> Services { get; set; }
 
 		public Project(double budget, Category category)
 		{
@@ -15,6 +17,7 @@ namespace CostsApi.Projects
 			Budget = budget;
 			Cost = 0;
 			Category = category;
+			Services = new List<ProjectService>();
 		}
 	}
 }
