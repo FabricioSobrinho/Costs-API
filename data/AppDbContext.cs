@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
 using CostsApi.Projects;
+using CostsApi.ProjectServices;
 
 namespace CostsApi.Data
 {
@@ -18,5 +19,6 @@ namespace CostsApi.Data
 			optionsBuilder.UseNpgsql(_configuration.GetConnectionString("DefaultConnection"));
 		}
 		public DbSet<Project> Projects { get; set; }
+		public DbSet<ProjectService> Services { get; set; }
 	}
 }
