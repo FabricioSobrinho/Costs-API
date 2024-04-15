@@ -51,6 +51,22 @@ namespace CostsApi.Projects
 				var returnProject = new ProjectDto(project.ProjectName, project.Cost, project.Budget, project.Category);
 				return Results.Ok(returnProject);
 			});
+
+			app.MapDelete("projects/:{ProjectName}", async (string ProjectName, AppDbContext context) =>
+			{
+				var project = await context.Projects.SingleOrDefaultAsync(x => x.ProjectName == ProjectName);
+
+				if (project == null)
+				{
+					return Results.NotFound("Projeto não encontrado");
+				}
+
+				context.Projects.Remove(project);
+				await context.SaveChangesAsync();
+
+				var returnProject = new ProjectDto(project.ProjectName, project.Cost, project.Budget, project.Category);
+				return Results.Ok(returnProject);
+			});
 		}
 	}
 }
