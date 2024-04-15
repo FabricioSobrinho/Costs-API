@@ -29,6 +29,25 @@ namespace CostsApi.Projects
 				await context.SaveChangesAsync();
 				return Results.Ok();
 			});
+
+			app.MapPut("projects/:{ProjectName}", async (string ProjectName, UpdateProjectRequest request, AppDbContext context) =>
+			{
+				var project = await context.Projects.SingleOrDefaultAsync(x => x.ProjectName == ProjectName);
+
+				if  (project == null)
+				{
+					return Results.NotFound("Projeto não encontrado");
+				}
+
+				project.ProjectName = request.ProjectName;
+				project.Cost = request.ProjectCosts;
+				project.Budget = request.ProjectBudget;
+				project.Category = request.Category;
+
+				await context.SaveChangesAsync();
+
+				return Results.Ok(project);
+			});
 		}
 	}
 }
