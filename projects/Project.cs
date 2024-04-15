@@ -6,7 +6,7 @@ namespace CostsApi.Projects
 	public class Project
 	{
 		public Guid Id { get; init; }
-		public string ProjectName { get; init; }
+		public string ProjectName { get; set; }
 		public double Budget { get; set; }
 		public double Cost { get; set; }
 		public Category Category { get; set; }
