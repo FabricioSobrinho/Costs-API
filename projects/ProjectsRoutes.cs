@@ -10,8 +10,15 @@ namespace CostsApi.Projects
 			app.MapGet("projects", async (AppDbContext context) =>
 			{
 				var projects = await context.Projects.ToListAsync();
+				var projectsDtos = new List<ProjectDto>();
 
-				return projects;
+				foreach (var project in projects)
+				{
+					var projectDto = new ProjectDto(project.ProjectName, project.Cost, project.Budget, project.Category);
+					projectsDtos.Add(projectDto);
+				}
+
+				return projectsDtos;
 			});
 
 			app.MapPost("projects", async (AddProjectRequest request, AppDbContext context) =>
@@ -19,7 +26,7 @@ namespace CostsApi.Projects
 				var newProject = new Project(request.ProjectName, request.Budget, request.Category);
 
 				var projectExists = await context.Projects.AnyAsync((project) => project.ProjectName == newProject.ProjectName);
-				
+
 				if (projectExists)
 				{
 					return Results.Conflict("Projeto já existe");
@@ -27,14 +34,16 @@ namespace CostsApi.Projects
 
 				await context.Projects.AddAsync(newProject);
 				await context.SaveChangesAsync();
-				return Results.Ok();
+
+				var returnProject = new ProjectDto(newProject.ProjectName, newProject.Cost, newProject.Budget, newProject.Category);
+				return Results.Ok(newProject);
 			});
 
 			app.MapPut("projects/:{ProjectName}", async (string ProjectName, UpdateProjectRequest request, AppDbContext context) =>
 			{
 				var project = await context.Projects.SingleOrDefaultAsync(x => x.ProjectName == ProjectName);
 
-				if  (project == null)
+				if (project == null)
 				{
 					return Results.NotFound("Projeto não encontrado");
 				}
@@ -46,7 +55,8 @@ namespace CostsApi.Projects
 
 				await context.SaveChangesAsync();
 
-				return Results.Ok(project);
+				var returnProject = new ProjectDto(project.ProjectName, project.Cost, project.Budget, project.Category);
+				return Results.Ok(returnProject);
 			});
 		}
 	}
