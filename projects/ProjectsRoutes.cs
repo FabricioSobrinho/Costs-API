@@ -9,16 +9,9 @@ namespace CostsApi.Projects
 		{
 			app.MapGet("projects", async (AppDbContext context) =>
 			{
-				var projects = await context.Projects.ToListAsync();
-				var projectsDtos = new List<ProjectDto>();
+				var projects = await context.Projects.Select(project => new ProjectDto(project.ProjectName, project.Cost, project.Budget, project.Category)).ToListAsync();
 
-				foreach (var project in projects)
-				{
-					var projectDto = new ProjectDto(project.ProjectName, project.Cost, project.Budget, project.Category);
-					projectsDtos.Add(projectDto);
-				}
-
-				return projectsDtos;
+				return projects;
 			});
 
 			app.MapPost("projects", async (AddProjectRequest request, AppDbContext context) =>
