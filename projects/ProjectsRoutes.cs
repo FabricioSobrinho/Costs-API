@@ -1,4 +1,5 @@
 ﻿using CostsApi.Data;
+using CostsApi.ProjectServices;
 using Microsoft.EntityFrameworkCore;
 
 namespace CostsApi.Projects
@@ -9,7 +10,7 @@ namespace CostsApi.Projects
 		{
 			app.MapGet("projects", async (AppDbContext context, CancellationToken ct) =>
 			{
-				var projects = await context.Projects.Select(project => new ProjectDto(project.ProjectName, project.Cost, project.Budget, project.Category)).ToListAsync(ct);
+				var projects = await context.Projects.Select(project => new ProjectDto(project.ProjectName, project.Cost, project.Budget, project.Category, project.Services.Select(service => new ProjectServiceDto(service.ServiceName, service.Cost, service.Description)).ToList())).ToListAsync(ct);
 
 				return projects;
 			});
@@ -28,7 +29,7 @@ namespace CostsApi.Projects
 				await context.Projects.AddAsync(newProject, ct);
 				await context.SaveChangesAsync(ct);
 
-				var returnProject = new ProjectDto(newProject.ProjectName, newProject.Cost, newProject.Budget, newProject.Category);
+				var returnProject = new ProjectDto(newProject.ProjectName, newProject.Cost, newProject.Budget, newProject.Category, newProject.Services.Select(service => new ProjectServiceDto(service.ServiceName, service.Cost, service.Description)).ToList());
 				return Results.Ok(newProject);
 			});
 
@@ -48,7 +49,7 @@ namespace CostsApi.Projects
 
 				await context.SaveChangesAsync(ct);
 
-				var returnProject = new ProjectDto(project.ProjectName, project.Cost, project.Budget, project.Category);
+				var returnProject = new ProjectDto(project.ProjectName, project.Cost, project.Budget, project.Category, project.Services.Select(service => new ProjectServiceDto(service.ServiceName, service.Cost, service.Description)).ToList());
 				return Results.Ok(returnProject);
 			});
 
@@ -64,7 +65,7 @@ namespace CostsApi.Projects
 				context.Projects.Remove(project);
 				await context.SaveChangesAsync(ct);
 
-				var returnProject = new ProjectDto(project.ProjectName, project.Cost, project.Budget, project.Category);
+				var returnProject = new ProjectDto(project.ProjectName, project.Cost, project.Budget, project.Category, project.Services.Select(service => new ProjectServiceDto(service.ServiceName, service.Cost, service.Description)).ToList());
 				return Results.Ok(returnProject);
 			});
 		}
