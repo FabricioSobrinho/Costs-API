@@ -10,7 +10,8 @@ namespace CostsApi.ProjectServices
 		{
 			app.MapGet("services/:{ProjectName}", async (string ProjectName, AppDbContext context, CancellationToken ct) =>
 			{
-				var services = await context.Services.Where(service => service.ProjectName == ProjectName).ToListAsync(ct);
+				var services = await context.Services.Where(service => service.ProjectName == ProjectName).
+					Select(service => new ProjectServiceDto(service.ServiceName, service.Cost, service.Description)).ToListAsync(ct);
 
 				return Results.Ok(services);
 			});
@@ -42,7 +43,7 @@ namespace CostsApi.ProjectServices
 				await context.Services.AddAsync(newService, ct);
 				await context.SaveChangesAsync(ct);
 
-				return Results.Ok(newService);
+				return Results.Ok(new ProjectServiceDto(newService.ServiceName, newService.Cost, newService.Description));
 			});
 
 			app.MapDelete("services/:{ServiceName}", async (string ServiceName, AppDbContext context, CancellationToken ct) =>
@@ -54,7 +55,7 @@ namespace CostsApi.ProjectServices
 					return Results.NotFound("Serviço não existe");
 				}
 
-				context.Services.Remove(project);
+				context.Services.Remove(project); 
 				await context.SaveChangesAsync(ct);
 
 				return Results.Ok("Serviço deletado");
