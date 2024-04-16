@@ -39,9 +39,19 @@ namespace CostsApi.ProjectServices
 				return Results.Ok(newService);
 			});
 
-			app.MapDelete("services/:{ServiceName}", async () =>
+			app.MapDelete("services/:{ServiceName}", async (string ServiceName, AppDbContext context, CancellationToken ct) =>
 			{
+				var project = await context.Services.FirstOrDefaultAsync(service => service.ServiceName == ServiceName, ct);
 
+				if (project == null)
+				{
+					return Results.NotFound("Serviço não existe");
+				}
+
+				context.Services.Remove(project);
+				await context.SaveChangesAsync(ct);
+
+				return Results.Ok("Serviço deletado");
 			});
 		}
 	}
