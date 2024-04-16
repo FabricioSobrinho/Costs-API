@@ -32,6 +32,12 @@ namespace CostsApi.ProjectServices
 				}
 
 				project.Services.Add(newService);
+				project.Cost += newService.Cost;
+
+				if (project.Cost > project.Budget)
+				{
+					return Results.BadRequest("Custo do serviço não deve ser maior que o orçamento do projeto");
+				}
 
 				await context.Services.AddAsync(newService, ct);
 				await context.SaveChangesAsync(ct);
