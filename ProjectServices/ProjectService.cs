@@ -1,5 +1,8 @@
-﻿namespace CostsApi.ProjectServices
+﻿using Microsoft.EntityFrameworkCore;
+
+namespace CostsApi.ProjectServices
 {
+	[Index(nameof(ServiceName), IsUnique = true)]
 	public class ProjectService
 	{
 		public Guid Id { get; set; }
