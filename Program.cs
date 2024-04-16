@@ -1,5 +1,6 @@
 using CostsApi.Data;
 using CostsApi.Projects;
+using CostsApi.ProjectServices;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,6 +22,7 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 ProjectsRoutes.AddProjectsRoutes(app);
+ServicesRoutes.AddServicesRoutes(app);
 
 app.Run();
 
