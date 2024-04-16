@@ -19,19 +19,29 @@ namespace CostsApi.ProjectServices
 			{
 				var newService = new ProjectService(request.ProjectName, request.ServiceName, request.Cost, request.Description);
 
-				var project = await context.Projects.FirstOrDefaultAsync(project => project.ProjectName ==  request.ProjectName, ct);
-				
+				var project = await context.Projects.FirstOrDefaultAsync(project => project.ProjectName == request.ProjectName, ct);
 				if (project == null)
 				{
 					return Results.NotFound("Projeto não existe");
 				}
-				
+
+				var serviceExists = await context.Services.AnyAsync(service => service.ServiceName == request.ServiceName, ct);
+				if (serviceExists)
+				{
+					return Results.BadRequest("Serviço já existe");
+				}
+
 				project.Services.Add(newService);
 
 				await context.Services.AddAsync(newService, ct);
 				await context.SaveChangesAsync(ct);
 
 				return Results.Ok(newService);
+			});
+
+			app.MapDelete("services/:{ServiceName}", async () =>
+			{
+
 			});
 		}
 	}
