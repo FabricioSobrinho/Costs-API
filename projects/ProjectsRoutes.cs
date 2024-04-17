@@ -10,7 +10,7 @@ namespace CostsApi.Projects
 		{
 			app.MapGet("projects", async (AppDbContext context, CancellationToken ct) =>
 			{
-				var projects = await context.Projects.Select(project => new ProjectDto(project.ProjectName, project.Cost, project.Budget, project.Category, project.Services.Select(service => new ProjectServiceDto(service.ServiceName, service.Cost, service.Description)).ToList())).ToListAsync(ct);
+				var projects = await context.Projects.Select(project => new ProjectGetDto(project.Id, project.ProjectName, project.Cost, project.Budget, project.Category, project.Services.Select(service => new ProjectServiceDto(service.ServiceName, service.Cost, service.Description)).ToList())).ToListAsync(ct);
 
 				return projects;
 			});
