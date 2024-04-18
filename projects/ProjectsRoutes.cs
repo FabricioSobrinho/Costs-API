@@ -15,6 +15,19 @@ namespace CostsApi.Projects
 				return projects;
 			});
 
+			app.MapGet("projects/:{ProjectName}", async (string ProjectName, AppDbContext context, CancellationToken ct) =>
+			{
+				var project = await context.Projects.SingleOrDefaultAsync(x => x.ProjectName == ProjectName, ct);
+
+				if (project == null)
+				{
+					return Results.NotFound("Projeto não encontrado");
+				}
+
+				var returnProject = new ProjectDto(project.ProjectName, project.Cost, project.Budget, project.Category, project.Services.Select(service => new ProjectServiceDto(service.ServiceName, service.Cost, service.Description)).ToList());
+				return Results.Ok(returnProject);
+			});
+
 			app.MapPost("projects", async (AddProjectRequest request, AppDbContext context, CancellationToken ct) =>
 			{
 				var newProject = new Project(request.ProjectName, request.Budget, request.Category);
