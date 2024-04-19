@@ -10,22 +10,25 @@ namespace CostsApi.Projects
 		{
 			app.MapGet("projects", async (AppDbContext context, CancellationToken ct) =>
 			{
-				var projects = await context.Projects.Select(project => new ProjectGetDto(project.Id, project.ProjectName, project.Cost, project.Budget, project.Category, project.Services.Select(service => new ProjectServiceDto(service.ServiceName, service.Cost, service.Description)).ToList())).ToListAsync(ct);
+				var projects = await context.Projects.Select(project => new ProjectGetDto(project.Id, project.ProjectName, project.Cost, project.Budget, project.Category, project.Services.
+					Select(service => new ProjectServiceDto(service.ServiceName, service.Cost, service.Description)).ToList())).ToListAsync(ct);
 
 				return projects;
 			});
 
 			app.MapGet("projects/:{ProjectName}", async (string ProjectName, AppDbContext context, CancellationToken ct) =>
 			{
-				var project = await context.Projects.SingleOrDefaultAsync(x => x.ProjectName == ProjectName, ct);
+				var project = await context.Projects
+					.Include(p => p.Services) // Inclua aqui as entidades relacionadas que deseja carregar
+					.FirstOrDefaultAsync(p => p.ProjectName == ProjectName, ct);
 
 				if (project == null)
 				{
 					return Results.NotFound("Projeto não encontrado");
 				}
-
+				
 				var returnProject = new ProjectDto(project.ProjectName, project.Cost, project.Budget, project.Category, project.Services.Select(service => new ProjectServiceDto(service.ServiceName, service.Cost, service.Description)).ToList());
-				return Results.Ok(returnProject);
+				return Results.Ok(project);
 			});
 
 			app.MapPost("projects", async (AddProjectRequest request, AppDbContext context, CancellationToken ct) =>
@@ -56,8 +59,7 @@ namespace CostsApi.Projects
 				}
 
 				project.ProjectName = request.ProjectName;
-				project.Cost = request.ProjectCosts;
-				project.Budget = request.ProjectBudget;
+				project.Budget = request.Budget;
 				project.Category = request.Category;
 
 				await context.SaveChangesAsync(ct);
