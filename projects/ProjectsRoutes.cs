@@ -19,7 +19,7 @@ namespace CostsApi.Projects
 			app.MapGet("projects/:{ProjectName}", async (string ProjectName, AppDbContext context, CancellationToken ct) =>
 			{
 				var project = await context.Projects
-					.Include(p => p.Services) // Inclua aqui as entidades relacionadas que deseja carregar
+					.Include(p => p.Services) 
 					.FirstOrDefaultAsync(p => p.ProjectName == ProjectName, ct);
 
 				if (project == null)
