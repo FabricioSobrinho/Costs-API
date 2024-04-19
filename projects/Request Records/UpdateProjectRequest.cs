@@ -2,5 +2,5 @@
 
 namespace CostsApi.Projects
 {
-	public record UpdateProjectRequest(string ProjectName, double ProjectCosts, double ProjectBudget, Category Category);
+	public record UpdateProjectRequest(string ProjectName, double Budget, Category Category);
 }
