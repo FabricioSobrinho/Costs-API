@@ -55,7 +55,7 @@ namespace CostsApi.ProjectServices
 					return Results.NotFound("Serviço não existe");
 				}
 
-				var project = await context.Projects.FirstOrDefaultAsync(project => project.ProjectName == service.ProjectName, ct);
+				var project = await context.Projects.FirstOrDefaultAsync(project => project.Id == service.ProjectId, ct);
 				if (project == null)
 				{
 					return Results.NotFound("Projeto não existe");
