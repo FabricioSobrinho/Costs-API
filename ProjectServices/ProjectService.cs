@@ -7,6 +7,7 @@ namespace CostsApi.ProjectServices
 	{
 		public Guid Id { get; set; }
 		public string ProjectName { get; set; }
+		public Guid ProjectId { get; set; }
         public string ServiceName { get; set; }
 		public double Cost { get; set; }
 		public string Description { get; set; }
